@@ -1,7 +1,12 @@
 from itertools import islice
 from bs4 import BeautifulSoup
 import mechanize
+import logging
+from collections import defaultdict
+
 import secrets
+
+logging.basicConfig(filename='example.log',level=logging.DEBUG)
 
 browser = mechanize.Browser()
 browser.set_handle_robots(False)
@@ -26,8 +31,8 @@ data = {}
 
 # get full list of names from linked pages
 results = soup.div.div
-#for item in islice(soup.div.div.next_siblings, 5):
-for item in soup.div.div.next_siblings:
+for item in islice(soup.div.div.next_siblings, 5):
+#for item in soup.div.div.next_siblings:
   try:
     interest = item.find('div', '_3con').text.strip()
     print interest
@@ -54,15 +59,32 @@ for item in soup.div.div.next_siblings:
     data[interest] = [namebox.a.text for namebox in namecontainer.find_all('div', 'fcb')]
 
   except:
+    logging.warning('Problem processing:' + item)
     pass
 
+# Print statistics
+people_interests = defaultdict(list)
+peopletomeet = defaultdict(list)
 
-
-#Print statistics
 for item, names in data.iteritems():
-  print item + ": " + str(len(names))
+    # Number of people interested in a topic
+    print item + ": " + str(len(names))
 
-# print data
+    # Number of topics per person
+    for name in names:
+        people_interests[name].append(item)
 
+        # People with shared interests
+        if "Marie Huynh" in names:
+            peopletomeet[name].append(item)
 
+print "Counts of interests selected"
+
+for name in people_interests:
+    print name + ": " + str(len(people_interests[name]))
+
+print "Subset with overlapping interests"
+for name, commonints in peopletomeet.iteritems():
+    print name + ": "
+    print commonints
 
