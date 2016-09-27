@@ -23,44 +23,46 @@ browser.form['pass'] = secrets.secretpass
 response = browser.submit()
 #print response.read()
 
-soup = BeautifulSoup(open('polldata.html'), 'html.parser')
+soup = BeautifulSoup(open('poll.html'), 'html.parser')
+interestbox = soup.find('div', '_3cof')
 
 #print(soup.prettify())
 
 data = {}
 
 # get full list of names from linked pages
-results = soup.div.div
-for item in islice(soup.div.div.next_siblings, 5):
+#results = soup.div.div
+for item in islice(interestbox.div.next_siblings, 5):
 #for item in soup.div.div.next_siblings:
-  try:
-    interest = item.find('div', '_3con').text.strip()
-    print interest
+    try:
+        interest = item.find('div', '_3con').text.strip()
+        print interest
 
-    # link to names
-    namelink = item.find('li', '_49cb').a['href']
-    #print namelink
-    
-    # fetch names
-    url = 'http://www.facebook.com' + namelink
-    print url
-    namepage = browser.open(url)
-    namecontainer = BeautifulSoup(namepage.read(), 'html.parser').find('div', 'fbProfileBrowserList')
+        # link to names
+        namelink = item.find('li', '_49cb').a['href']
+        #print namelink
+        
+        # fetch names
+        url = namelink
+        print url
+        namepage = browser.open(url)
+        namecontainer = BeautifulSoup(namepage.read(), 'html.parser').find('div', 'fbProfileBrowserList')
 
-    # data[interest] = []
-    # #print namecontainer
-    # # Grab only the first text field with name, not how many friends in common
-    # for namebox in namecontainer.find_all('div', 'fcb'):
-    #   name = namebox.a.text
-      
-    #   data[interest].append(name)
-      #print name
+        # data[interest] = []
+        # #print namecontainer
+        # # Grab only the first text field with name, not how many friends in common
+        # for namebox in namecontainer.find_all('div', 'fcb'):
+        #   name = namebox.a.text
+          
+        #   data[interest].append(name)
+          #print name
 
-    data[interest] = [namebox.a.text for namebox in namecontainer.find_all('div', 'fcb')]
+        data[interest] = [namebox.a.text for namebox in namecontainer.find_all('div', 'fcb')]
 
-  except:
-    logging.warning('Problem processing:' + item)
-    pass
+    except:
+        logging.warning('Problem processing')
+        logging.warning(item)
+        pass
 
 # Print statistics
 people_interests = defaultdict(list)
@@ -87,4 +89,3 @@ print "Subset with overlapping interests"
 for name, commonints in peopletomeet.iteritems():
     print name + ": "
     print commonints
-
