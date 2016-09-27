@@ -32,8 +32,8 @@ data = {}
 
 # get full list of names from linked pages
 #results = soup.div.div
-for item in islice(interestbox.div.next_siblings, 5):
-#for item in soup.div.div.next_siblings:
+#for item in islice(interestbox.div.next_siblings, 5):
+for item in interestbox.div.next_siblings:
     try:
         interest = item.find('div', '_3con').text.strip()
         print interest
@@ -89,3 +89,5 @@ print "Subset with overlapping interests"
 for name, commonints in peopletomeet.iteritems():
     print name + ": "
     print commonints
+
+print peopletomeet
