@@ -2,7 +2,7 @@ from itertools import islice
 from bs4 import BeautifulSoup
 import mechanize
 import logging
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 import secrets
 
@@ -85,9 +85,20 @@ print "Counts of interests selected"
 for name in people_interests:
     print name + ": " + str(len(people_interests[name]))
 
-print "Subset with overlapping interests"
-for name, commonints in peopletomeet.iteritems():
-    print name + ": "
-    print commonints
+# print "Subset with overlapping interests"
+# for name, commonints in peopletomeet.iteritems():
+#     print name + ": "
+#     print commonints
 
-print peopletomeet
+# print peopletomeet
+
+
+
+orderednames = OrderedDict(sorted(peopletomeet.items(), key = lambda x: len(x[1]), reverse = True))
+
+
+for i in orderednames:
+    print i + ": " + str(len(orderednames[i]))
+    for j in orderednames[i]:
+        print j
+    print ""
