@@ -5,6 +5,6 @@ This fetches poll data (because the official API no longer supports it) and gene
 This uses from itertools, BeautifulSoup, mechanize, logging, and collections.
 
 ## To Do
-Generalize for other polls
-Cleanup
-Automate fetching of poll options
+* Generalize for other polls
+* Cleanup
+* Automate fetching of poll options
